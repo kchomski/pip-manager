@@ -13,8 +13,11 @@ logging.basicConfig(
 
 __version__ = '1.0.0'
 
-# TODO: Windows http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
 # TODO: unittesty
 # TODO: logging
+# TODO: Windows http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
 # TODO: link do GH
+# TODO: **poprawic architekture**
+# TODO: docstringi
+# TODO: poprawić dokumentacje (wyswietlanie na BB i GH)
 # TODO:
