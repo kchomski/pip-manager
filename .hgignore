@@ -1,0 +1,9 @@
+.pyc
+.idea
+instance
+.log
+.egg-info
+dist
+user.ini
+.env
+.cache

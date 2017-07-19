@@ -1,0 +1,5 @@
+include CHANGES.txt
+include LICENSE.txt
+include README.md
+include setup.cfg
+recursive-include pip_manager/ config.ini
