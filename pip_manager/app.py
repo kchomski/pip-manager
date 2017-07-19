@@ -5,12 +5,15 @@
 from __future__ import unicode_literals
 
 import curses
-import re
 import sys
 
+from contextlib import redirect_stderr
+from contextlib import redirect_stdout
+
 from pip_manager import __version__
-from pip_manager.const import ENTER, SPACE
-from pip_manager.utils import suppress_std_stream
+from pip_manager.const import ENTER
+from pip_manager.const import SPACE
+from pip_manager.distribution import Distribution
 from pip_manager.utils import get_protected_dists
 
 try:
@@ -31,7 +34,6 @@ else:
 
 class PipManager(object):
 
-    line_width = 79
     menu_options = [
         ('Up/Down', ' - prev/next package\n'),
         ('Left/Right', ' - prev/next page\n'),
@@ -44,32 +46,61 @@ class PipManager(object):
         ('Q', ' - exit'),
     ]
 
-    def __init__(self, stdscr):
+    def __init__(self):
+        # curses initialization
+        self.stdscr = curses.initscr()
+        curses.noecho()
+        curses.cbreak()
+        self.stdscr.keypad(1)
+        try:
+            curses.start_color()
+        except:
+            pass
         curses.use_default_colors()
-        self.stdscr = stdscr
+
         self.menu_height = len(self.menu_options) + 1  # Plus 1 for menu header
         self.min_height = self.menu_height + 3  # Plus 1 for top header,
         # plus 1 for pages count and 1 to display at least one distribution.
 
+        self.page = self.cursor_pos = 0
+        self.popup_win = curses.newwin(3, 20, 1, 0)
         self.draw_header()
         self.distributions = self.get_distributions()
-        self.check_terminal_size()
+        self.check_win_size()
+        self.dist_win = curses.newwin(
+            self.dist_win_height, self.line_width, 1, 0
+        )
+        self.dist_win.keypad(True)
 
-        self.dist_win = self.get_dist_window()
         self.draw_distributions_list()
         self.draw_page_number()
         self.draw_menu()
         self.mainloop()
 
-    def get_dist_window(self):
-        """Returns window used to draw distributions list.
+    def __del__(self):
+        self.stdscr.keypad(0)
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
 
-        :return: curses window instance.
-        """
-        win_height = self.stdscr.getmaxyx()[0] - self.menu_height - 2
-        win = curses.newwin(win_height, self.line_width, 1, 0)
-        win.keypad(True)
-        return win
+    @property
+    def dist_win_height(self):
+        return self.stdscr.getmaxyx()[0] - self.menu_height - 2
+
+    @property
+    def dists_to_draw(self):
+        start_idx = self.page*self.dist_win_height
+        stop_idx = start_idx + self.dist_win_height
+        return self.distributions[start_idx:stop_idx]
+
+    @property
+    def line_width(self):
+        w = (
+            4 + max(len(d.name) for d in self.distributions) + 2 +
+            max(len(d.version) for d in self.distributions) + 2 +
+            max(len(d.newest_version) for d in self.distributions) + 1
+        )
+        return w
 
     def draw_header(self):
         """Draws top most header with program name and python version."""
@@ -97,7 +128,7 @@ class PipManager(object):
         """Draws options menu at the bottom of the terminal."""
         win = curses.newwin(
             self.menu_height,
-            self.line_width,
+            max(len(opt)+len(desc) for opt, desc in self.menu_options),
             self.stdscr.getmaxyx()[0] - self.menu_height,
             0
         )
@@ -107,37 +138,6 @@ class PipManager(object):
             win.addstr(desc)
         win.refresh()
 
-    @suppress_std_stream('stdout')
-    def get_newest_version(self, dist_name):
-        """Gets newest version of *dist_name*.
-
-        Returns newest *stable* version if available (assumption is that stable
-        version consists of only numbers separated by dots (e.g. 1.9.23)).
-        If not returns newest version available (e.g. 3.2.3.post2).
-        If version cannot be determined 'n/a' is returned.
-
-        :param str dist_name: Name of distribution to check.
-        :return: Newest version.
-        :rtype: str
-        """
-        sys.stderr = StringIO()
-        self.draw_popup('Checking the newest version for {}'.format(dist_name))
-        pip.main(['install', '{}=='.format(dist_name)])
-        err = sys.stderr
-        versions = [
-            ver for ver in re.findall(
-                r'[\d\.]+[\d]*[\w]*',
-                err.getvalue().split('\n')[0].split('(')[-1]
-            )
-        ]
-        try:
-            return [v for v in versions if v.replace('.', '').isdigit()][-1]
-        except IndexError:
-            try:
-                return versions[-1]
-            except IndexError:
-                return 'n/a'
-
     def get_distributions(self):
         """Gets list of installed distributions along with the newest version
         available.
@@ -145,56 +145,42 @@ class PipManager(object):
         :return: List of dicts.
         :rtype: list
         """
-        # reload is needed, so pip can get current versions of installed
-        # packages after they are updated.
-        reload(pip.utils.pkg_resources)
-        distributions = [
-            {
-                'name': d.key,
-                'curr_ver': d.version,
-                'newest_ver': self.get_newest_version(d.key),
-                'is_checked': False
-            } for d in sorted(
-                pip.get_installed_distributions(), key=lambda x: x.key
-            )
-        ]
+        distributions = []
+        for d in sorted(pip.get_installed_distributions(), key=lambda x: x.key):
+            self.draw_popup('Checking the newest version for {}'.format(d.key))
+            distributions.append(Distribution(name=d.key, version=d.version))
         return distributions
 
-    def draw_distributions_list(self, start_idx=0):
+    def draw_distributions_list(self):
         """Draws installed distributions.
 
         Draws installed distributions with current versions installed and
         newest stable versions available.
-
-        :param int start_idx: Starting index.
         """
         selection_mapping = {
             True: 'x',
             False: ' ',
         }
 
-        stop_idx = start_idx + self.dist_win.getmaxyx()[0]
-        dist_to_draw = self.distributions[start_idx:stop_idx]
-
-        dist_name_offset = 4
-        curr_ver_offset = (
-            dist_name_offset + max(len(d['name']) for d in dist_to_draw) + 1
-        )
-        newest_ver_offset = (
-            curr_ver_offset + max(len(d['curr_ver']) for d in dist_to_draw) + 2
-        )
+        longest_name = max(len(d.name) for d in self.dists_to_draw)
+        longest_version = max(len(d.version) for d in self.dists_to_draw)
 
         self.dist_win.erase()
-        for d in dist_to_draw:
-            y = self.dist_win.getyx()[0]
+        for d in self.dists_to_draw:
             self.dist_win.addstr(
-                '[{}]'.format(selection_mapping[d['is_checked']])
+                '[{selection}] {name}{spaces}{version}'.format(
+                    selection=selection_mapping[d.is_selected],
+                    name=d.name,
+                    spaces=' ' * (longest_name - len(d.name) + 2),
+                    version=d.version,
+                )
             )
-            self.dist_win.addstr(y, dist_name_offset, d['name'])
-            self.dist_win.addstr(y, curr_ver_offset, d['curr_ver'])
             self.dist_win.addstr(
-                y, newest_ver_offset, d['newest_ver'],
-                curses.A_BOLD if d['curr_ver'] != d['newest_ver'] else
+                '{spaces}{newest_ver}'.format(
+                    spaces=' ' * (longest_version - len(d.version) + 2),
+                    newest_ver=d.newest_version,
+                ),
+                curses.A_BOLD if d.version != d.newest_version else
                 curses.A_DIM
             )
             try:
@@ -205,34 +191,29 @@ class PipManager(object):
 
     def toggle_one(self, idx):
         """Toggles selection of currently chosen distribution."""
-        self.distributions[idx]['is_checked'] = (
-            True if not self.distributions[idx]['is_checked'] else False
-        )
+        self.distributions[idx].is_selected = not self.distributions[idx].is_selected
 
     def toggle_all(self):
         """Toggles selection of ALL distributions."""
-        is_all_checked = all(d['is_checked'] for d in self.distributions)
+        is_all_checked = all(d.is_selected for d in self.distributions)
         for d in self.distributions:
-            d['is_checked'] = True if not is_all_checked else False
+            d.is_selected = not is_all_checked
 
-    @suppress_std_stream('stdout')
-    @suppress_std_stream('stderr')
     def update_distributions(self):
         """Updates selected distributions to newest stable version available.
         """
-        to_update = [d for d in self.distributions if d['is_checked']
-                     and d['newest_ver'] != 'n/a' and
-                     d['curr_ver'] != d['newest_ver']]
+        to_update = [d for d in self.distributions if d.is_selected
+                     and d.newest_version != 'n/a' and
+                     d.version != d.newest_version]
         if to_update:
             for d in to_update:
-                self.draw_popup('Upgrading {}'.format(d['name']))
-                pip.main(['install', '--upgrade', d['name']])
-                d['curr_ver'] = d['newest_ver']
+                self.draw_popup('Upgrading {}'.format(d.name))
+                with redirect_stderr(StringIO()), redirect_stdout(StringIO()):
+                    pip.main(['install', '--upgrade', d.name])
+                d.version = d.newest_version
             for d in self.distributions:
-                d['is_checked'] = False
+                d.is_selected = False
 
-    @suppress_std_stream('stdout')
-    @suppress_std_stream('stderr')
     def uninstall_distributions(self):
         """Uninstalls selected distributions.
 
@@ -241,16 +222,17 @@ class PipManager(object):
         config.ini.
         """
         protected = get_protected_dists()
-        to_remove = [d for d in self.distributions if d['is_checked']
-                     and d['name'] not in protected]
+        to_remove = [d for d in self.distributions if d.is_selected
+                     and d.name not in protected]
         if to_remove:
             self.draw_popup(
                 'Do you really want to remove selected packages? [y/N]'
             )
             if self.stdscr.getch() in (ord('y'), ord('Y')):
                 for d in to_remove:
-                    self.draw_popup('Removing {}'.format(d['name']))
-                    pip.main(['uninstall', '--yes', d['name']])
+                    self.draw_popup('Removing {}'.format(d.name))
+                    with redirect_stderr(StringIO()), redirect_stdout(StringIO()):
+                        pip.main(['uninstall', '--yes', d.name])
                     self.distributions.remove(d)
 
     def draw_popup(self, msg):
@@ -258,10 +240,11 @@ class PipManager(object):
 
         :param str msg: Message to display.
         """
-        win = curses.newwin(3, self.line_width, 1, 0)
-        win.box()
-        win.addstr(1, 1, msg)
-        win.refresh()
+        self.popup_win.erase()
+        self.popup_win.resize(3, max(35, len(msg) + 3))
+        self.popup_win.box()
+        self.popup_win.addstr(1, 1, msg)
+        self.popup_win.refresh()
 
     def get_pages_count(self):
         """Gets max pages count.
@@ -269,42 +252,44 @@ class PipManager(object):
         :return: Max pages count.
         :rtype: int
         """
-        return int((len(self.distributions)-1) / (self.dist_win.getmaxyx()[0]))
+        return int((len(self.distributions)-1) / self.dist_win_height)
 
-    def check_terminal_size(self):
+    def check_win_size(self):
         """Checks if terminal has proper size to display all information."""
-        while self.stdscr.getmaxyx()[0] < self.min_height:
+        while self.dist_win_height < 1:
             self.stdscr.clear()
             self.draw_header()
             self.draw_popup('Please resize the terminal.')
             self.stdscr.getch()
         curses.flushinp()
 
-    def get_max_cursor_pos(self, page):
+    def resize_dist_win(self):
+        self.dist_win.erase()
+        self.dist_win.resize(self.dist_win_height, self.line_width)
+        self.dist_win.refresh()
+
+    @property
+    def max_cursor_pos(self):
         """Gets maximum cursor position for current page to be in distributions
         list range.
 
-        :param int page: Current page.
         :return: Maximum cursor position available.
         :rtype: int
         """
-        win_height = self.dist_win.getmaxyx()[0]
         try:
-            _ = self.distributions[win_height*(page + 1)]
+            _ = self.distributions[self.dist_win_height*(self.page + 1)]
         except IndexError:
-            return len(self.distributions) - 1 - page * win_height
-        return win_height - 1
+            return len(self.distributions) - 1 - self.page * self.dist_win_height
+        return self.dist_win_height - 1
 
     def mainloop(self):
         """Main program loop."""
-        page = cursor_pos = 0
-
         while True:
-            win_height = self.dist_win.getmaxyx()[0]
-            curr_dist_idx = page * win_height + cursor_pos
-
-            self.dist_win.chgat(cursor_pos, 3, curses.A_REVERSE)
-            self.dist_win.move(cursor_pos, 1)
+            self.popup_win.clear()
+            self.popup_win.refresh()
+            self.draw_distributions_list()
+            self.dist_win.chgat(self.cursor_pos, 3, curses.A_REVERSE)
+            self.dist_win.move(self.cursor_pos, 1)
             self.dist_win.refresh()
 
             try:
@@ -313,25 +298,26 @@ class PipManager(object):
                 break
 
             if key == curses.KEY_UP:
-                cursor_pos = max(cursor_pos - 1, 0)
+                self.cursor_pos = max(self.cursor_pos - 1, 0)
             elif key == curses.KEY_DOWN:
-                cursor_pos = min(cursor_pos + 1, self.get_max_cursor_pos(page))
+                self.cursor_pos = min(self.cursor_pos + 1, self.max_cursor_pos)
             elif key == curses.KEY_HOME:
-                cursor_pos = 0
+                self.cursor_pos = 0
             elif key == curses.KEY_END:
-                cursor_pos = self.get_max_cursor_pos(page)
+                self.cursor_pos = self.max_cursor_pos
             elif key == curses.KEY_PPAGE:
-                cursor_pos = max(cursor_pos-5, 0)
+                self.cursor_pos = max(self.cursor_pos-5, 0)
             elif key == curses.KEY_NPAGE:
-                cursor_pos = min(cursor_pos + 5, self.get_max_cursor_pos(page))
+                self.cursor_pos = min(self.cursor_pos + 5, self.max_cursor_pos)
             elif key in (ord('q'), ord('Q')):
                 break
             else:
                 if key == curses.KEY_LEFT:
-                    page = max(page-1, 0)
+                    self.page = max(self.page-1, 0)
                 elif key == curses.KEY_RIGHT:
-                    page = min(page+1, self.get_pages_count())
+                    self.page = min(self.page+1, self.get_pages_count())
                 elif key == SPACE:
+                    curr_dist_idx = self.page * self.dist_win_height + self.cursor_pos
                     self.toggle_one(curr_dist_idx)
                 elif key in (ord('a'), ord('A')):
                     self.toggle_all()
@@ -340,9 +326,8 @@ class PipManager(object):
                 elif key == curses.KEY_DC:
                     self.uninstall_distributions()
                 elif key == curses.KEY_RESIZE:
-                    self.check_terminal_size()
-                    self.dist_win = self.get_dist_window()
-                cursor_pos = min(cursor_pos, self.get_max_cursor_pos(page))
-                self.draw_page_number(page)
+                    self.check_win_size()
+                self.resize_dist_win()
+                self.cursor_pos = min(self.cursor_pos, self.max_cursor_pos)
+                self.draw_page_number(self.page)
                 self.draw_menu()
-            self.draw_distributions_list(win_height * page)
