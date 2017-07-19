@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 
 import curses
+import curses.panel
 import sys
 
 from contextlib import redirect_stderr
@@ -64,6 +65,7 @@ class PipManager(object):
 
         self.page = self.cursor_pos = 0
         self.popup_win = curses.newwin(3, 20, 1, 0)
+        self.panel = curses.panel.new_panel(self.popup_win)
         self.draw_header()
         self.distributions = self.get_distributions()
         self.check_win_size()
@@ -96,9 +98,9 @@ class PipManager(object):
     @property
     def line_width(self):
         w = (
-            4 + max(len(d.name) for d in self.distributions) + 2 +
-            max(len(d.version) for d in self.distributions) + 2 +
-            max(len(d.newest_version) for d in self.distributions) + 1
+            4 + max(len(d.name) for d in self.dists_to_draw) + 2 +
+            max(len(d.version) for d in self.dists_to_draw) + 2 +
+            max(len(d.newest_version) for d in self.dists_to_draw) + 1
         )
         return w
 
@@ -241,10 +243,15 @@ class PipManager(object):
         :param str msg: Message to display.
         """
         self.popup_win.erase()
+        self.popup_win.refresh()
         self.popup_win.resize(3, max(35, len(msg) + 3))
         self.popup_win.box()
         self.popup_win.addstr(1, 1, msg)
         self.popup_win.refresh()
+        self.panel.hide()
+        self.panel.hide()
+        # self.panel.refresh()
+        curses.doupdate()
 
     def get_pages_count(self):
         """Gets max pages count.
@@ -285,8 +292,6 @@ class PipManager(object):
     def mainloop(self):
         """Main program loop."""
         while True:
-            self.popup_win.clear()
-            self.popup_win.refresh()
             self.draw_distributions_list()
             self.dist_win.chgat(self.cursor_pos, 3, curses.A_REVERSE)
             self.dist_win.move(self.cursor_pos, 1)
