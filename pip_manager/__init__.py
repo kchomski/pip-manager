@@ -6,7 +6,7 @@ import os
 logging.basicConfig(
     level=logging.ERROR,
     filename=os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), 'pypackt.log'
+        os.path.abspath(os.path.dirname(__file__)), 'pip-manager.log'
     ),
     filemode='w',
 )
@@ -20,6 +20,5 @@ __version__ = '1.0.0'
 # TODO: link do GH
 # TODO: docstringi
 # TODO: poprawić dokumentacje (wyswietlanie na BB i GH)
-# TODO: poprawić dokumentacje (wyswietlanie na BB i GH)
-# TODO: czyszczenie okien
+# TODO: yapf, pep8, pylint, pyflakes
 # TODO:

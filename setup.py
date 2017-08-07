@@ -9,6 +9,7 @@ try:
     def read_md(f):
         return convert(f, 'rst')
 except ImportError:
+
     def read_md(f):
         return open(f, 'r').read()
 
@@ -19,17 +20,17 @@ README_PATH = os.path.join(
     os.path.abspath(os.path.dirname(__file__)), 'README.md'
 )
 
-
 setup(
     name='pip-manager',
-    version='1.0.1',
-    description='pip-manager is a command line tool to easily and comfortably manage installed Python packages.',
+    version='1.0.0',
+    description=
+    'pip-manager is a command line tool to easily and comfortably manage your installed Python packages.',
     long_description=read_md(README_PATH),
     url=PROJECT_URL,
     author='Krzysztof Chomski',
     author_email='krzysztof.chomski@gmail.com',
     license='MIT',
-    keywords=['ebooks', 'learning', 'education'],
+    keywords=[],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',

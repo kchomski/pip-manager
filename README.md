@@ -12,20 +12,20 @@
 7. [Acknowledgements](#acknowledgements)
 
 ## Requirements
-pip-manager works on both Python 2 and Python 3 (tested on `python2.7` and `python3.5+`) and is Linux and Windows compatible (tested on Linux Mint 18.2 and Windows 7). 
+**pip-manager** works on both Python 2 and Python 3 (tested on `python2.7` and `python3.5+`) and is Linux and Windows compatible (tested on Linux Mint 18.2 and Windows 7). 
 
 #### Dependencies:
-pip-manager is written purely in Python and has `pip` as an only dependency.  
-On Windows you have to install ported `curses` library ([link](https://bitbucket.org/kchomski/pip-manager/issues)) as native Python `curses` does not work there.
+**pip-manager** is written purely in Python and has `pip` as an only dependency.  
+On Windows you have to install ported `curses` library ([link](http://www.lfd.uci.edu/~gohlke/pythonlibs/)) as native Python `curses` does not work there.
 
 ## Installation
-pip-manager can be easily installed using `pip`:
+**pip-manager** can be easily installed using `pip`:
 ```
 pip install -U pip-manager
 ```
 
 ## Usage
-To run pip-manager just type `pip-manager` in your terminal window and hit `Enter`.  
+To run **pip-manager** just type `pip-manager` in your terminal window and hit `Enter`.  
 You will see something very similar to this:
 <pre>
 <b>pip-manager v1.0.0 (python 2.7.12)</b>
@@ -67,7 +67,7 @@ Page: 1/5
 As you can see options are displayed all the time and are pretty self-explanatory, so using pip-manager should be really simple and straightforward.
 
 Second column shows current version installed, whereas third column shows the newest stable version available.  
-It may not be so well visible here, but if there is newer version available than currently installed, it will be printed with <b>bold</b> font (look at `flask` above).  
+It may not be so well visible here, but if there is a newer version available than the one currently installed, it will be printed with <b>bold</b> font (look at `flask` above).  
 If you have newest version already installed it will be printed greyed out.
 
 #### IMPORTANT: Protected distributions
@@ -77,7 +77,7 @@ By default `pip`, `setuptools` and `wheel` are listed in the aforementioned file
 To uninstall protected distributions you have to either uninstall them manually (`pip uninstall some_dist`) or remove them from `config.ini` file.
 
  
-
+## Contributing
 Contributions are always welcome - just:
 1. Fork the project.
 2. Commit your changes on a feature/fix branch.
@@ -89,7 +89,7 @@ Contributions are always welcome - just:
 If you need assistance, want to report a bug or request a feature, please raise an issue [here](https://bitbucket.org/kchomski/pip-manager/issues).
 
 ## License
-pip-manager is released under the terms of the MIT License. Please refer to the `LICENSE.txt` file for more details.
+**pip-manager** is released under the terms of the MIT License. Please refer to the `LICENSE.txt` file for more details.
 
 ## Acknowledgements
 Great thanks to `pip` creators and contributors for making life easier for the rest of us. 
