@@ -137,27 +137,12 @@ class PipManager(object):
         """
         return int((len(self.distributions) - 1) / self.gui.dist_win_height)
 
-    @property
-    def max_cursor_pos(self):
-        """Gets maximum cursor position for current page that is in
-        distributions list range.
-
-        :return: Maximum cursor position available.
-        :rtype: int
-        """
-        try:
-            _ = self.distributions[self.gui.dist_win_height * (self.page + 1)]
-        except IndexError:
-            return len(
-                self.distributions
-            ) - 1 - self.page * self.gui.dist_win_height
-        return self.gui.dist_win_height - 1
-
     def mainloop(self):
         """Main program loop."""
         self.gui.draw_page_number(self.page + 1, self.get_pages_count() + 1)
         self.gui.draw_menu()
         while True:
+            max_cursor_pos = len(self.dists_to_draw) - 1
             self.gui.draw_distributions_list(self.dists_to_draw)
             self.gui.dist_win.chgat(self.cursor_pos, 3, curses.A_REVERSE)
             self.gui.dist_win.move(self.cursor_pos, 1)
@@ -171,15 +156,15 @@ class PipManager(object):
             if key == curses.KEY_UP:
                 self.cursor_pos = max(self.cursor_pos - 1, 0)
             elif key == curses.KEY_DOWN:
-                self.cursor_pos = min(self.cursor_pos + 1, self.max_cursor_pos)
+                self.cursor_pos = min(self.cursor_pos + 1, max_cursor_pos)
             elif key == curses.KEY_HOME:
                 self.cursor_pos = 0
             elif key == curses.KEY_END:
-                self.cursor_pos = self.max_cursor_pos
+                self.cursor_pos = max_cursor_pos
             elif key == curses.KEY_PPAGE:
                 self.cursor_pos = max(self.cursor_pos - 5, 0)
             elif key == curses.KEY_NPAGE:
-                self.cursor_pos = min(self.cursor_pos + 5, self.max_cursor_pos)
+                self.cursor_pos = min(self.cursor_pos + 5, max_cursor_pos)
             elif key in (ord('q'), ord('Q')):
                 break
             else:
@@ -200,7 +185,7 @@ class PipManager(object):
                     self.uninstall_distributions()
                 elif key == curses.KEY_RESIZE:
                     self.gui.check_win_size()
-                self.cursor_pos = min(self.cursor_pos, self.max_cursor_pos)
+                self.cursor_pos = min(self.cursor_pos, max_cursor_pos)
                 self.gui.draw_page_number(
                     self.page + 1, self.get_pages_count() + 1
                 )
