@@ -129,7 +129,8 @@ class PipManager(object):
                         pip.main(['uninstall', '--yes', d.name])
                     self.distributions.remove(d)
 
-    def get_pages_count(self):
+    @property
+    def last_page(self):
         """Gets max pages count.
 
         :return: Max pages count.
@@ -139,7 +140,7 @@ class PipManager(object):
 
     def mainloop(self):
         """Main program loop."""
-        self.gui.draw_page_number(self.page + 1, self.get_pages_count() + 1)
+        self.gui.draw_page_number(self.page + 1, self.last_page + 1)
         self.gui.draw_menu()
         while True:
             max_cursor_pos = len(self.dists_to_draw) - 1
@@ -171,7 +172,7 @@ class PipManager(object):
                 if key == curses.KEY_LEFT:
                     self.page = max(self.page - 1, 0)
                 elif key == curses.KEY_RIGHT:
-                    self.page = min(self.page + 1, self.get_pages_count())
+                    self.page = min(self.page + 1, self.last_page)
                 elif key == SPACE:
                     curr_dist_idx = (
                         self.page * self.gui.dist_win_height + self.cursor_pos
@@ -187,6 +188,6 @@ class PipManager(object):
                     self.gui.check_win_size()
                 self.cursor_pos = min(self.cursor_pos, max_cursor_pos)
                 self.gui.draw_page_number(
-                    self.page + 1, self.get_pages_count() + 1
+                    self.page + 1, self.last_page + 1
                 )
                 self.gui.draw_menu()
