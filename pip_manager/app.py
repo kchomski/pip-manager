@@ -7,8 +7,13 @@ from __future__ import unicode_literals
 import curses
 import sys
 
-from contextlib import redirect_stderr
-from contextlib import redirect_stdout
+try:
+    from contextlib import redirect_stderr
+    from contextlib import redirect_stdout
+except ImportError:
+    from pip_manager.utils import redirect_stderr
+    from pip_manager.utils import redirect_stdout
+
 
 from pip_manager.gui import Gui
 from pip_manager.const import ENTER
@@ -140,14 +145,15 @@ class PipManager(object):
 
     def mainloop(self):
         """Main program loop."""
-        self.gui.draw_page_number(self.page + 1, self.last_page + 1)
-        self.gui.draw_menu()
         while True:
             max_cursor_pos = len(self.dists_to_draw) - 1
-            self.gui.draw_distributions_list(self.dists_to_draw)
-            self.gui.dist_win.chgat(self.cursor_pos, 3, curses.A_REVERSE)
-            self.gui.dist_win.move(self.cursor_pos, 1)
-            self.gui.dist_win.refresh()
+            self.cursor_pos = min(self.cursor_pos, max_cursor_pos)
+            self.gui.draw_distributions_list(
+                self.dists_to_draw,
+                self.page + 1,
+                self.last_page + 1,
+                self.cursor_pos
+            )
 
             try:
                 key = self.gui.dist_win.getch()
@@ -168,26 +174,20 @@ class PipManager(object):
                 self.cursor_pos = min(self.cursor_pos + 5, max_cursor_pos)
             elif key in (ord('q'), ord('Q')):
                 break
-            else:
-                if key == curses.KEY_LEFT:
-                    self.page = max(self.page - 1, 0)
-                elif key == curses.KEY_RIGHT:
-                    self.page = min(self.page + 1, self.last_page)
-                elif key == SPACE:
-                    curr_dist_idx = (
-                        self.page * self.gui.dist_win_height + self.cursor_pos
-                    )
-                    self.toggle_one(curr_dist_idx)
-                elif key in (ord('a'), ord('A')):
-                    self.toggle_all()
-                elif key == ENTER:
-                    self.update_distributions()
-                elif key == curses.KEY_DC:
-                    self.uninstall_distributions()
-                elif key == curses.KEY_RESIZE:
-                    self.gui.check_win_size()
-                self.cursor_pos = min(self.cursor_pos, max_cursor_pos)
-                self.gui.draw_page_number(
-                    self.page + 1, self.last_page + 1
+            elif key == curses.KEY_LEFT:
+                self.page = max(self.page - 1, 0)
+            elif key == curses.KEY_RIGHT:
+                self.page = min(self.page + 1, self.last_page)
+            elif key == SPACE:
+                curr_dist_idx = (
+                    self.page * self.gui.dist_win_height + self.cursor_pos
                 )
-                self.gui.draw_menu()
+                self.toggle_one(curr_dist_idx)
+            elif key in (ord('a'), ord('A')):
+                self.toggle_all()
+            elif key == ENTER:
+                self.update_distributions()
+            elif key == curses.KEY_DC:
+                self.uninstall_distributions()
+            elif key == curses.KEY_RESIZE:
+                self.gui.check_win_size()

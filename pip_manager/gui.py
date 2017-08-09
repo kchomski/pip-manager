@@ -78,7 +78,7 @@ class Gui(object):
         )
         self.stdscr.refresh()
 
-    def draw_page_number(self, curr_page, last_page):
+    def _draw_page_number(self, curr_page, last_page):
         """Draws page number under distributions list."""
         win = curses.newwin(
             1, self.line_width,
@@ -87,7 +87,7 @@ class Gui(object):
         win.addstr('Page: {}/{}'.format(curr_page, last_page))
         win.refresh()
 
-    def draw_menu(self):
+    def _draw_menu(self):
         """Draws options menu at the bottom of the terminal."""
         win = curses.newwin(
             self.menu_height, self.line_width,
@@ -99,7 +99,15 @@ class Gui(object):
             win.addstr(desc)
         win.refresh()
 
-    def draw_distributions_list(self, dists_to_draw):
+    def draw_distributions_list(self, dists_to_draw, page, last_page, cursor_pos):
+        self._resize_dist_win()
+        self._draw_distributions_list(dists_to_draw)
+        self._draw_page_number(page, last_page)
+        self._draw_menu()
+        self.dist_win.chgat(cursor_pos, 3, curses.A_REVERSE)
+        self.dist_win.move(cursor_pos, 1)
+
+    def _draw_distributions_list(self, dists_to_draw):
         """Draws distributions list.
 
         Draws list of distributions with their current versions and newest

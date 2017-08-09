@@ -6,8 +6,13 @@ import pip
 import re
 import sys
 
-from contextlib import redirect_stderr
-from contextlib import redirect_stdout
+try:
+    from contextlib import redirect_stderr
+    from contextlib import redirect_stdout
+except ImportError:
+    from pip_manager.utils import redirect_stderr
+    from pip_manager.utils import redirect_stdout
+
 
 if sys.version_info.major == 2:
     from StringIO import StringIO
