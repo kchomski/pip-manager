@@ -13,7 +13,6 @@ except ImportError:
     from pip_manager.utils import redirect_stderr
     from pip_manager.utils import redirect_stdout
 
-
 if sys.version_info.major == 2:
     from StringIO import StringIO
 else:
@@ -21,7 +20,6 @@ else:
 
 
 class Distribution(object):
-
     def __init__(self, name, version):
         self.name = name
         self.version = version
@@ -43,7 +41,8 @@ class Distribution(object):
         with redirect_stderr(err_stream), redirect_stdout(StringIO()):
             pip.main(['install', '{}=='.format(self.name)])
         versions = [
-            ver for ver in re.findall(
+            ver
+            for ver in re.findall(
                 r'[\d\.]+[\d]*[\w]*',
                 err_stream.getvalue().split('\n')[0].split('(')[-1]
             )

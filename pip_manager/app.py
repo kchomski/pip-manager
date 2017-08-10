@@ -14,7 +14,6 @@ except ImportError:
     from pip_manager.utils import redirect_stderr
     from pip_manager.utils import redirect_stdout
 
-
 from pip_manager.gui import Gui
 from pip_manager.const import ENTER
 from pip_manager.const import SPACE
@@ -149,9 +148,7 @@ class PipManager(object):
             max_cursor_pos = len(self.dists_to_draw) - 1
             self.cursor_pos = min(self.cursor_pos, max_cursor_pos)
             self.gui.draw_distributions(
-                self.dists_to_draw,
-                self.page + 1,
-                self.last_page + 1,
+                self.dists_to_draw, self.page + 1, self.last_page + 1,
                 self.cursor_pos
             )
 
@@ -179,7 +176,9 @@ class PipManager(object):
             elif key == curses.KEY_RIGHT:
                 self.page = min(self.page + 1, self.last_page)
             elif key == SPACE:
-                self.toggle_one(self.page * self.gui.dist_win_height + self.cursor_pos)
+                self.toggle_one(
+                    self.page * self.gui.dist_win_height + self.cursor_pos
+                )
             elif key in (ord('a'), ord('A')):
                 self.toggle_all()
             elif key == ENTER:

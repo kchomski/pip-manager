@@ -15,8 +15,8 @@ def get_protected_dists():
     :rtype: list
     """
     parser = ConfigParser()
-    parser.read(os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), 'config.ini')
+    parser.read(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
     )
     return parser.options('protected')
 
