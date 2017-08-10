@@ -38,29 +38,18 @@ else:
 
 class PipManager(object):
 
-    menu_options = [
-        ('Up/Down', ' - prev/next package\n'),
-        ('Left/Right', ' - prev/next page\n'),
-        ('PgUp/PgDn', ' - jump up/down by 5\n'),
-        ('Home/End', ' - jump to top/bottom\n'),
-        ('Space', ' - (un)select package\n'),
-        ('A', ' - toggle all\n'),
-        ('Enter', ' - upgrade selected\n'),
-        ('Delete', ' - uninstall selected\n'),
-        ('Q', ' - exit'),
-    ]
-
     def __init__(self):
         self.page = self.cursor_pos = 0
-        self.gui = Gui(79)
+        self.gui = Gui(line_width=79)
         self.distributions = self.get_distributions()
-        self.mainloop()
 
     @property
     def dists_to_draw(self):
-        """
+        """Returns list of distributions to draw for current page and window
+        height.
 
-        :return:
+        :return: List of distributions to draw.:
+        :rtype: list
         """
         start_idx = self.page * self.gui.dist_win_height
         stop_idx = start_idx + self.gui.dist_win_height

@@ -13,7 +13,6 @@ logging.basicConfig(
 
 __version__ = '1.0.0'
 
-# TODO: **poprawic architekture (MVC)**
 # TODO: unittesty
 # TODO: logging
 # TODO: Windows http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses

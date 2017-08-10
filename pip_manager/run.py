@@ -3,7 +3,7 @@ from pip_manager.app import PipManager
 
 
 def main():
-    PipManager()
+    PipManager().mainloop()
 
 
 if __name__ == '__main__':
