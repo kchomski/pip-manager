@@ -148,7 +148,7 @@ class PipManager(object):
         while True:
             max_cursor_pos = len(self.dists_to_draw) - 1
             self.cursor_pos = min(self.cursor_pos, max_cursor_pos)
-            self.gui.draw_distributions_list(
+            self.gui.draw_distributions(
                 self.dists_to_draw,
                 self.page + 1,
                 self.last_page + 1,
@@ -179,10 +179,7 @@ class PipManager(object):
             elif key == curses.KEY_RIGHT:
                 self.page = min(self.page + 1, self.last_page)
             elif key == SPACE:
-                curr_dist_idx = (
-                    self.page * self.gui.dist_win_height + self.cursor_pos
-                )
-                self.toggle_one(curr_dist_idx)
+                self.toggle_one(self.page * self.gui.dist_win_height + self.cursor_pos)
             elif key in (ord('a'), ord('A')):
                 self.toggle_all()
             elif key == ENTER:

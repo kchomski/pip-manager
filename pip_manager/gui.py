@@ -35,7 +35,7 @@ class Gui(object):
         self.menu_height = len(self.menu_options) + 1
         self.min_height = self.menu_height + 3
         self.popup_win = curses.newwin(3, 20, 1, 0)
-        self.draw_header()
+        self._draw_header()
         self.check_win_size()
         self.dist_win = curses.newwin(
             self.dist_win_height, self.line_width, 1, 0
@@ -69,7 +69,7 @@ class Gui(object):
         """
         return self.stdscr.getmaxyx()[0] - self.menu_height - 2
 
-    def draw_header(self):
+    def _draw_header(self):
         """Draws top most header with program name and python version."""
         self.stdscr.addstr(
             0, 0, 'pip-manager {} (python {})'.format(
@@ -99,7 +99,7 @@ class Gui(object):
             win.addstr(desc)
         win.refresh()
 
-    def draw_distributions_list(self, dists_to_draw, page, last_page, cursor_pos):
+    def draw_distributions(self, dists_to_draw, page, last_page, cursor_pos):
         self._resize_dist_win()
         self._draw_distributions_list(dists_to_draw)
         self._draw_page_number(page, last_page)
@@ -160,7 +160,7 @@ class Gui(object):
         """Checks if terminal has proper size to display all information."""
         while self.dist_win_height < 1:
             self.stdscr.clear()
-            self.draw_header()
+            self._draw_header()
             self.draw_popup('Please resize the terminal.')
             self.stdscr.getch()
         curses.flushinp()
