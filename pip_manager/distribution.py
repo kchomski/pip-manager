@@ -20,7 +20,6 @@ else:
 
 
 class Distribution(object):
-
     def __init__(self, name, version):
         self.name = name
         self.version = version
@@ -28,13 +27,17 @@ class Distribution(object):
         self.is_selected = False
 
     def __str__(self):
-        return '<Distribution({}|{}|{})>'.format(self.name, self.version, self.newest_version)
+        return '<Distribution({}|{}|{})>'.format(
+            self.name, self.version, self.newest_version
+        )
 
     def __repr__(self):
-        return '<Distribution({}|{}|{})>'.format(self.name, self.version, self.newest_version)
+        return '<Distribution({}|{}|{})>'.format(
+            self.name, self.version, self.newest_version
+        )
 
     def __eq__(self, other):
-        return self.name == other.name
+        return self.name == other.name and self.version == other.version
 
     def get_newest_version(self):
         """Gets newest version of distribution available.

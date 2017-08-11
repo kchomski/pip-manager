@@ -37,7 +37,6 @@ else:
 
 
 class PipManager(object):
-
     def __init__(self):
         self.page = self.cursor_pos = 0
         self.gui = Gui(line_width=79)
