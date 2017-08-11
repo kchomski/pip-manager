@@ -11,7 +11,7 @@ except ImportError:
 def get_protected_dists():
     """Gets list of protected distributions from config.ini file.
 
-    :return: List of string with names of protected distributions.
+    :return: List with names of protected distributions.
     :rtype: list
     """
     parser = ConfigParser()

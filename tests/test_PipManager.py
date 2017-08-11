@@ -11,6 +11,7 @@ class Test_PipManager(object):
     @pytest.fixture(autouse=True)
     def custom_init(self, mocker):
         mocker.spy(app, 'Distribution')
+        mocker.spy(app, 'get_protected_dists')
         mocker.patch('pip_manager.distribution.Distribution.get_newest_version').return_value = '9.99.999'
         mocker.patch('pip_manager.distribution.pip', autospec=True)
 
@@ -21,7 +22,6 @@ class Test_PipManager(object):
                 self.key = key
                 self.version = version
 
-        self.mocked_pip.main.return_value = None
         self.mocked_pip.get_installed_distributions.return_value = [
             FakePipDist(key, version) for key, version in [
                 ['alabaster', '0.7.10'],
@@ -135,11 +135,77 @@ class Test_PipManager(object):
         assert not any(d.is_selected for d in self.pm.distributions)
 
     def test_update_distributions(self):
-        for i in range(5):
-            self.pm.distributions[i].is_selected = True
+        for d in self.pm.distributions[:5]:
+            d.is_selected = True
 
         self.pm.update_distributions()
         assert self.pm.gui.draw_popup.called
 
         for d in self.pm.distributions[:5]:
             self.mocked_pip.main.assert_any_call(['install', '--upgrade', d.name])
+            assert d.version == d.newest_version
+
+        assert not any(d.is_selected for d in self.pm.distributions)
+
+    def test_uninstall_distributions_decline(self):
+        for d in self.pm.distributions[:5]:
+            d.is_selected = True
+
+        self.pm.gui.stdscr.getch.return_value = ord('N')
+
+        self.pm.uninstall_distributions()
+
+        assert app.get_protected_dists.called
+        assert not self.mocked_pip.main.called
+
+        for d in self.pm.distributions[:5]:
+            assert d.is_selected
+
+    @pytest.mark.parametrize('accept_char', ['y', 'Y'])
+    def test_uninstall_distributions_accept(self, accept_char):
+        to_delete = self.pm.distributions[:5]
+
+        for d in self.pm.distributions[:5]:
+            d.is_selected = True
+
+        self.pm.gui.stdscr.getch.return_value = ord(accept_char)
+
+        self.pm.uninstall_distributions()
+
+        assert app.get_protected_dists.called
+        assert self.mocked_pip.main.called
+
+        for d in to_delete:
+            assert d not in self.pm.distributions
+
+    def test_uninstall_distributions_protected(self, mocker):
+        mocker.patch('pip_manager.app.get_protected_dists').return_value = ['pip', 'wheel']
+
+        for d in self.pm.distributions:
+            d.is_selected = True if d.name in ['pip', 'wheel'] else False
+
+        self.pm.uninstall_distributions()
+
+        assert app.get_protected_dists.called
+        assert not self.pm.gui.stdscr.getch.called
+        assert not self.mocked_pip.main.called
+
+        assert any(d.name == 'pip' for d in self.pm.distributions)
+        assert any(d.name == 'wheel' for d in self.pm.distributions)
+
+    @pytest.mark.parametrize(
+        'dist_win_height, expected',
+        [
+            (100, 0),
+            (50, 1),
+            (30, 2),
+            (17, 3),
+            (15, 4),
+            (10, 6),
+            (5, 12),
+            (1, 61),
+        ]
+    )
+    def test_last_page(self, dist_win_height, expected):
+        self.pm.gui.dist_win_height = dist_win_height
+        assert self.pm.last_page == expected

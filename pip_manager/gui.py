@@ -17,6 +17,8 @@ except ImportError:
 
 class Gui(object):
 
+    stdscr = None
+
     menu_options = [
         ('Up/Down', ' - prev/next package\n'),
         ('Left/Right', ' - prev/next page\n'),

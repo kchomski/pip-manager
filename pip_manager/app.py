@@ -14,10 +14,10 @@ except ImportError:
     from pip_manager.utils import redirect_stderr
     from pip_manager.utils import redirect_stdout
 
-from pip_manager.gui import Gui
 from pip_manager.const import ENTER
 from pip_manager.const import SPACE
 from pip_manager.distribution import Distribution
+from pip_manager.gui import Gui
 from pip_manager.utils import get_protected_dists
 
 try:
