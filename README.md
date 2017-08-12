@@ -1,6 +1,6 @@
 # pip-manager
 
-**pip-manager** is a command line tool to easily and comfortably manage installed Python packages.
+**pip-manager** is a command line tool to make Python packages management easy.
 
 ## Table of Contents
 1. [Requirements](#requirements)
@@ -16,7 +16,9 @@
 
 #### Dependencies:
 **pip-manager** is written purely in Python and has `pip` as an only dependency.  
-On Windows you have to install ported `curses` library ([link](http://www.lfd.uci.edu/~gohlke/pythonlibs/)) as native Python `curses` does not work there.
+
+#### NOTE for Windows users:
+On Windows you have to install ported `curses` library ([link](http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses)) as native Python `curses` does not work there.
 
 ## Installation
 **pip-manager** can be easily installed using `pip`:
@@ -33,7 +35,7 @@ You will see something very similar to this:
 │Checking the newest version for cssselect                                    │
 └─────────────────────────────────────────────────────────────────────────────┘
 </pre>
-After a (hopefully) short while pip-manager will be ready for use:  
+After a (hopefully) short while pip-manager will be ready to use:  
 (don't worry - highlighted line should be white in your terminal, it's just how Markup works)
 <pre>
 <b>pip-manager v1.0.0 (python 2.7.12)</b>
@@ -64,15 +66,15 @@ Page: 1/5
 <b>Q</b> - exit
 </pre>
 
-As you can see options are displayed all the time and are pretty self-explanatory, so using pip-manager should be really simple and straightforward.
+As you can see options are displayed all the time and are pretty self-explanatory, so using `pip-manager` should be really simple and straightforward.
 
 Second column shows current version installed, whereas third column shows the newest stable version available.  
-It may not be so well visible here, but if there is a newer version available than the one currently installed, it will be printed with <b>bold</b> font (look at `flask` above).  
+It may not be so well visible here, but if there is newer version available than the one currently installed, it will be printed with <b>bold</b> font (look at `flask` above).  
 If you have newest version already installed it will be printed greyed out.
 
 #### IMPORTANT: Protected distributions
 To protect yourself from accidentally removing needed distributions, you can add them to `[protected]` section in `config.ini` file (located in `pip-manager` installation directory).  
-This way you can select all packages with `A` and remove them with `Delete` and everything except protected packages will be uninstalled.  
+This way you can select all packages by pressing `A`, uninstall them with `Delete` and everything except protected packages will be uninstalled.  
 By default `pip`, `setuptools` and `wheel` are listed in the aforementioned file.  
 To uninstall protected distributions you have to either uninstall them manually (`pip uninstall some_dist`) or remove them from `config.ini` file.
 
