@@ -36,7 +36,6 @@ pip-manager v1.0.0 (python 2.7.12)
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 After a (hopefully) short while pip-manager will be ready to use:  
-(don't worry - highlighted line should be white in your terminal, it's just how Markup works)
 ```
 pip-manager v1.0.0 (python 2.7.12)
 [ ] cssselect                          1.0.1        1.0.1
@@ -60,31 +59,30 @@ Left/Right - prev/next page
 PgUp/PgDn - jump up/down by 5
 Home/End - jump to top/bottom
 Space - (un)select package
-A< - toggle all
+A - toggle all
 Enter - upgrade selected
 Delete - uninstall selected
 Q - exit
 ```
 As you can see options are displayed all the time and are pretty self-explanatory, so using `pip-manager` should be really simple and straightforward.
 
-Second column shows current version installed, whereas third column shows the newest stable version available.  
-It may not be so well visible here, but if there is newer version available than the one currently installed, it will be printed with <b>bold</b> font (look at `flask` above).  
-If you have newest version already installed it will be printed greyed out.
+Second column shows current version installed and third column shows the newest stable version available.  
+It is not visible here, but if there is newer version available, it will be printed with **bold** font.  
+If newest version is already installed it will be printed greyed out.
 
 #### IMPORTANT: Protected distributions
 To protect yourself from accidentally removing needed distributions, you can add them to `[protected]` section in `config.ini` file (located in `pip-manager` installation directory).  
 This way you can select all packages by pressing `A`, uninstall them with `Delete` and everything except protected packages will be uninstalled.  
-By default `pip`, `setuptools` and `wheel` are listed in the aforementioned file.  
-To uninstall protected distributions you have to either uninstall them manually (`pip uninstall some_dist`) or remove them from `config.ini` file.
+By default `pip`, `setuptools` and `wheel` are listed in the aforementioned file. To uninstall protected distributions you have to either uninstall them manually (`pip uninstall some_dist`) or remove them from `config.ini` file.
 
  
 ## Contributing
-Contributions are always welcome - just:
-1. Fork the project.
-2. Commit your changes on a feature/fix branch.
-3. Push.
-4. Submit a pull request.
-5. Have your changes merged :)
+Contributions are always welcome - just:  
+1. Fork the project.  
+2. Commit your changes on a feature/fix branch.  
+3. Push.  
+4. Submit a pull request.  
+5. Have your changes merged :)  
 
 ## Support
 If you need assistance, want to report a bug or request a feature, please raise an issue [here](https://bitbucket.org/kchomski/pip-manager/issues).
