@@ -17,7 +17,7 @@
 #### Dependencies:
 **pip-manager** is written purely in Python and has `pip` as an only dependency.  
 
-#### NOTE for Windows users:
+#### IMPORTANT note for Windows users:
 On Windows you have to install ported `curses` library ([link](http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses)) as native Python `curses` does not work there.
 
 ## Installation
@@ -29,17 +29,17 @@ pip install -U pip-manager
 ## Usage
 To run **pip-manager** just type `pip-manager` in your terminal window and hit `Enter`.  
 You will see something very similar to this:
-<pre>
-<b>pip-manager v1.0.0 (python 2.7.12)</b>
+```
+pip-manager v1.0.0 (python 2.7.12)
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │Checking the newest version for cssselect                                    │
 └─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+```
 After a (hopefully) short while pip-manager will be ready to use:  
 (don't worry - highlighted line should be white in your terminal, it's just how Markup works)
-<pre>
-<b>pip-manager v1.0.0 (python 2.7.12)</b>
-[ ] <mark>cssselect                          1.0.1        1.0.1</mark>
+```
+pip-manager v1.0.0 (python 2.7.12)
+[ ] cssselect                          1.0.1        1.0.1
 [ ] cycler                             0.10.0       0.10.0
 [ ] decorator                          4.0.11       4.0.11
 [ ] django                             1.11.3       1.11.3
@@ -47,25 +47,24 @@ After a (hopefully) short while pip-manager will be ready to use:
 [ ] entrypoints                        0.2.3        0.2.3
 [ ] enum34                             1.1.6        1.1.6
 [ ] fancycompleter                     0.7          0.7
-[ ] flask                              0.10         <b>0.12.2</b>
+[ ] flask                              0.10         0.12.2
 [ ] functools32                        3.2.3.post2  3.2.3.post2
 [ ] futures                            3.1.1        3.1.1
 [ ] html5lib                           0.999999999  0.999999999
 [ ] hupper                             1.0          1.0
 [ ] hyperlink                          17.2.1       17.2.1
 Page: 1/5
-<u>Options:</u>
-<b>Up/Down</b> - prev/next package
-<b>Left/Right</b> - prev/next page
-<b>PgUp/PgDn</b> - jump up/down by 5
-<b>Home/End</b> - jump to top/bottom
-<b>Space</b> - (un)select package
-<b>A</b> - toggle all
-<b>Enter</b> - upgrade selected
-<b>Delete</b> - uninstall selected
-<b>Q</b> - exit
-</pre>
-
+Options:
+Up/Down - prev/next package
+Left/Right - prev/next page
+PgUp/PgDn - jump up/down by 5
+Home/End - jump to top/bottom
+Space - (un)select package
+A< - toggle all
+Enter - upgrade selected
+Delete - uninstall selected
+Q - exit
+```
 As you can see options are displayed all the time and are pretty self-explanatory, so using `pip-manager` should be really simple and straightforward.
 
 Second column shows current version installed, whereas third column shows the newest stable version available.  
