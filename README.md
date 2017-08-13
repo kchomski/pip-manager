@@ -11,7 +11,7 @@
 6. [License](#license)
 7. [Acknowledgements](#acknowledgements)
 
-## Requirements
+## 1. Requirements
 **pip-manager** works on both Python 2 and Python 3 (tested on `python2.7` and `python3.5+`) and is Linux and Windows compatible (tested on Linux Mint 18.2 and Windows 7). 
 
 #### Dependencies:
@@ -20,7 +20,7 @@
 #### IMPORTANT note for Windows users:
 On Windows you have to install ported `curses` library ([link](http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses)) as native Python `curses` does not work there.
 
-## Installation
+## 2. Installation
 **pip-manager** can be easily installed using `pip`:
 ```
 pip install -U pip-manager
@@ -30,8 +30,7 @@ If you want to install pip-manager system-wide just use `sudo`:
 sudo pip install -U pip-manager
 ```
 
-## Usage
-#### Linux
+## 3. Usage
 To run **pip-manager** just type `pip-manager` in your terminal window and hit `Enter`.  
 If you made system-wide installation, run pip-manager with:
 ```
@@ -86,7 +85,7 @@ This way you can select all packages by pressing `A`, uninstall them with `Delet
 By default `pip`, `setuptools`, `wheel` and `pip-manager` are listed in the aforementioned file. To uninstall protected distributions you have to either uninstall them manually (`pip uninstall some_dist`) or remove them from `config.ini` file.
 
  
-## Contributing
+## 4. Contributing
 Contributions are always welcome - just:  
 1. Fork the project.  
 2. Commit your changes on a feature/fix branch.  
@@ -94,11 +93,11 @@ Contributions are always welcome - just:
 4. Submit a pull request.  
 5. Have your changes merged :)  
 
-## Support
+## 5. Support
 If you need assistance, want to report a bug or request a feature, please raise an issue [here](https://github.com/kchomski/pip-manager/issues).
 
-## License
+## 6. License
 **pip-manager** is released under the terms of the MIT License. Please refer to the `LICENSE.txt` file for more details.
 
-## Acknowledgements
+## 7. Acknowledgements
 Great thanks to `pip` creators and contributors for making life easier for the rest of us. 
