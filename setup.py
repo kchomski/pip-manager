@@ -52,5 +52,5 @@ setup(
         ],
     },
     setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'pytest-mock']
+    tests_require=['pytest>=3.2.1', 'pytest-mock']
 )

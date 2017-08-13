@@ -73,7 +73,7 @@ If newest version is already installed it will be printed greyed out.
 #### IMPORTANT: Protected distributions
 To protect yourself from accidentally removing needed distributions, you can add them to `[protected]` section in `config.ini` file (located in `pip-manager` installation directory).  
 This way you can select all packages by pressing `A`, uninstall them with `Delete` and everything except protected packages will be uninstalled.  
-By default `pip`, `setuptools` and `wheel` are listed in the aforementioned file. To uninstall protected distributions you have to either uninstall them manually (`pip uninstall some_dist`) or remove them from `config.ini` file.
+By default `pip`, `setuptools`, `wheel` and `pip-manager` are listed in the aforementioned file. To uninstall protected distributions you have to either uninstall them manually (`pip uninstall some_dist`) or remove them from `config.ini` file.
 
  
 ## Contributing
