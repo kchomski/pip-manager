@@ -44,8 +44,9 @@ setup(
         'Topic :: Utilities',
     ],
     packages=find_packages(),
-    install_requires=['pip'],
     include_package_data=True,
+    package_data={'': ['config.ini']},
+    install_requires=['pip'],
     entry_points={
         'console_scripts': [
             'pip-manager=pip_manager.run:main',

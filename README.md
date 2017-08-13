@@ -25,9 +25,19 @@ On Windows you have to install ported `curses` library ([link](http://www.lfd.uc
 ```
 pip install -U pip-manager
 ```
+If you want to install pip-manager system-wide just use `sudo`:
+```
+sudo pip install -U pip-manager
+```
 
 ## Usage
+#### Linux
 To run **pip-manager** just type `pip-manager` in your terminal window and hit `Enter`.  
+If you made system-wide installation, run pip-manager with:
+```
+sudo -H pip-manager
+```
+
 You will see something very similar to this:
 ```
 pip-manager v1.0.0 (python 2.7.12)
