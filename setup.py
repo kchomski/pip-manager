@@ -14,7 +14,7 @@ except ImportError:
         return open(f, 'r').read()
 
 
-from pip_manager.const import PROJECT_URL
+from pip_manager import __version__
 
 README_PATH = os.path.join(
     os.path.abspath(os.path.dirname(__file__)), 'README.md'
@@ -22,11 +22,10 @@ README_PATH = os.path.join(
 
 setup(
     name='pip-manager',
-    version='1.0.0',
-    description=
-    'pip-manager is a command line tool to easily and comfortably manage your installed Python packages.',
+    version=__version__,
+    description='pip-manager is a command line tool to make Python packages management easy.',
     long_description=read_md(README_PATH),
-    url=PROJECT_URL,
+    url='https://github.com/kchomski/pip-manager',
     author='Krzysztof Chomski',
     author_email='krzysztof.chomski@gmail.com',
     license='MIT',

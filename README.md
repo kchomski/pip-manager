@@ -85,7 +85,7 @@ Contributions are always welcome - just:
 5. Have your changes merged :)  
 
 ## Support
-If you need assistance, want to report a bug or request a feature, please raise an issue [here](https://bitbucket.org/kchomski/pip-manager/issues).
+If you need assistance, want to report a bug or request a feature, please raise an issue [here](https://github.com/kchomski/pip-manager/issues).
 
 ## License
 **pip-manager** is released under the terms of the MIT License. Please refer to the `LICENSE.txt` file for more details.

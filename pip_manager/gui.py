@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-
-"""
-from __future__ import unicode_literals
-
 import curses
 import sys
 
 from pip_manager import __version__
-
-try:
-    import pip
-except ImportError:
-    sys.exit("'pip' is not installed.")
 
 
 class Gui(object):

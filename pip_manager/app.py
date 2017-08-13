@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-
-"""
-from __future__ import unicode_literals
-
 import curses
-import sys
+
+import pip
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 try:
     from contextlib import redirect_stderr
@@ -14,26 +15,12 @@ except ImportError:
     from pip_manager.utils import redirect_stderr
     from pip_manager.utils import redirect_stdout
 
-from pip_manager.const import ENTER
-from pip_manager.const import SPACE
 from pip_manager.distribution import Distribution
 from pip_manager.gui import Gui
 from pip_manager.utils import get_protected_dists
 
-try:
-    import pip
-except ImportError:
-    sys.exit("'pip' is not installed.")
-
-try:
-    from importlib import reload
-except ImportError:
-    pass
-
-if sys.version_info.major == 2:
-    from StringIO import StringIO
-else:
-    from io import StringIO
+ENTER = 10
+SPACE = ord(' ')
 
 
 class PipManager(object):

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-
-"""
-import pip
 import re
-import sys
+
+import pip
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 try:
     from contextlib import redirect_stderr
@@ -12,11 +14,6 @@ try:
 except ImportError:
     from pip_manager.utils import redirect_stderr
     from pip_manager.utils import redirect_stdout
-
-if sys.version_info.major == 2:
-    from StringIO import StringIO
-else:
-    from io import StringIO
 
 
 class Distribution(object):
