@@ -1,6 +1,7 @@
-# pip-manager
+# pip-manager [![Build Status](https://travis-ci.org/kchomski/pip-manager.svg?branch=master)](https://travis-ci.org/kchomski/pip-manager)
 
 **pip-manager** is a command line tool to make Python packages management easy.
+
 
 ## Table of Contents
 1. [Requirements](#requirements)
