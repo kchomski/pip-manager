@@ -1,19 +1,9 @@
 # -*- coding: utf-8 -*-
 import curses
-
-import pip
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-
-try:
-    from contextlib import redirect_stderr
-    from contextlib import redirect_stdout
-except ImportError:
-    from pip_manager.utils import redirect_stderr
-    from pip_manager.utils import redirect_stdout
+import os
+import pkg_resources
+import subprocess
+import sys
 
 from pip_manager.distribution import Distribution
 from pip_manager.gui import Gui
@@ -21,6 +11,7 @@ from pip_manager.utils import get_protected_dists
 
 ENTER = 10
 SPACE = ord(' ')
+DEVNULL = open(os.devnull, 'w')
 
 
 class PipManager(object):
@@ -34,7 +25,7 @@ class PipManager(object):
         """Returns list of distributions to draw for current page and window
         height.
 
-        :return: List of distributions to draw.:
+        :return: List of distributions to draw.
         :rtype: list
         """
         start_idx = self.page * self.gui.dist_win_height
@@ -48,7 +39,7 @@ class PipManager(object):
         :rtype: list
         """
         distributions = []
-        for d in sorted(pip.get_installed_distributions(), key=lambda x: x.key):
+        for d in sorted(pkg_resources.working_set, key=lambda x: x.key):
             self.gui.draw_popup(
                 'Checking the newest version for {}'.format(d.key)
             )
@@ -78,8 +69,7 @@ class PipManager(object):
         if to_update:
             for d in to_update:
                 self.gui.draw_popup('Upgrading {}'.format(d.name))
-                with redirect_stderr(StringIO()), redirect_stdout(StringIO()):
-                    pip.main(['install', '--upgrade', d.name])
+                subprocess.call([sys.executable, '-m', 'pip', 'install', '-U', d.name], stderr=DEVNULL, stdout=DEVNULL)  # noqa: E501 line too long
                 d.version = d.newest_version
             for d in self.distributions:
                 d.is_selected = False
@@ -103,9 +93,7 @@ class PipManager(object):
             if self.gui.stdscr.getch() in (ord('y'), ord('Y')):
                 for d in to_remove:
                     self.gui.draw_popup('Removing {}'.format(d.name))
-                    with redirect_stderr(StringIO()
-                                        ), redirect_stdout(StringIO()):
-                        pip.main(['uninstall', '--yes', d.name])
+                    subprocess.call([sys.executable, '-m', 'pip', 'uninstall', '--yes', d.name], stdout=DEVNULL, stderr=DEVNULL)  # noqa: E501 line too long
                     self.distributions.remove(d)
 
     @property

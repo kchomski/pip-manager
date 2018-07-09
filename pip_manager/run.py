@@ -2,7 +2,7 @@
 import sys
 
 try:
-    import pip
+    import pip  # noqa: F401 'pip' imported but unused
 except ImportError:
     sys.exit("'pip' is not installed.")
 

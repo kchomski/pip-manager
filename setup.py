@@ -40,6 +40,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development',
         'Topic :: Utilities',
     ],
@@ -52,6 +53,5 @@ setup(
             'pip-manager=pip_manager.run:main',
         ],
     },
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest>=3.2.1', 'pytest-mock']
+    tests_require=['tox==3.1.1']
 )

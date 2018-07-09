@@ -1,0 +1,7 @@
+v1.0.1
+- Stopped using `pip` internals as of `pip==10.0.1`; moved to `pkg_resources` and `subprocess`.
+- Refactored tests.
+- Added `tox` to run tests.
+-----------------------
+v1.0.0
+- First stable release.

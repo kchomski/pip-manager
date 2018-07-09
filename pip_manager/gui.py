@@ -41,7 +41,7 @@ class Gui(object):
         self.stdscr.keypad(1)
         try:
             curses.start_color()
-        except:
+        except curses.error:
             pass
         curses.use_default_colors()
 

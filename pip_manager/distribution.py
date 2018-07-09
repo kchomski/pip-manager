@@ -1,19 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
+import subprocess
+import sys
 
-import pip
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-
-try:
-    from contextlib import redirect_stderr
-    from contextlib import redirect_stdout
-except ImportError:
-    from pip_manager.utils import redirect_stderr
-    from pip_manager.utils import redirect_stdout
+from subprocess import CalledProcessError
+from subprocess import STDOUT
 
 
 class Distribution(object):
@@ -47,14 +38,17 @@ class Distribution(object):
         :return: Newest version.
         :rtype: str
         """
-        err_stream = StringIO()
-        with redirect_stderr(err_stream), redirect_stdout(StringIO()):
-            pip.main(['install', '{}=='.format(self.name)])
+        error_msg = 'n/a'
+        try:
+            subprocess.check_output([sys.executable, '-m', 'pip', 'install', '{}=='.format(self.name)], stderr=STDOUT)  # noqa: E501 line too long
+        except CalledProcessError as e:
+            error_msg = e.output.decode()
+
         versions = [
             ver
             for ver in re.findall(
                 r'[\d\.]+[\d]*[\w]*',
-                err_stream.getvalue().split('\n')[0].split('(')[-1]
+                error_msg.split('\n')[1].split('(')[-1]
             )
         ]
         try:
