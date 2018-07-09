@@ -1,3 +1,6 @@
+v1.0.2
+- Fixed README.rst generation for long_description (to show properly on pypi).
+-----------------------
 v1.0.1
 - Stopped using `pip` internals as of `pip==10.0.1`; moved to `pkg_resources` and `subprocess`.
 - Refactored tests.
