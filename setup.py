@@ -53,5 +53,6 @@ setup(
             'pip-manager=pip_manager.run:main',
         ],
     },
-    tests_require=['tox==3.1.1']
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest', 'pytest-mock'],
 )
