@@ -1,6 +1,6 @@
 # pip-manager [![Build Status](https://travis-ci.org/kchomski/pip-manager.svg?branch=master)](https://travis-ci.org/kchomski/pip-manager)
 
-**pip-manager** is a command line tool to make Python packages management easy.
+`pip-manager` is a command line tool to make Python packages management easy.
 
 
 ## Table of Contents
@@ -13,18 +13,22 @@
 7. [Acknowledgements](#acknowledgements)
 
 ## 1. Requirements
-**pip-manager** works on both Python 2 and Python 3 (tested on `python2.7` and `python3.5+`) and is Linux and Windows compatible (tested on Linux Mint 18.2 and Windows 7). 
+`pip-manager` works on both Python 2 and Python 3 (tested on `python2.7` and `python3.5+`) and is Linux and Windows compatible (tested on Linux Mint 18.2 and Windows 7). 
 
 #### Dependencies:
-**pip-manager** is written purely in Python and has `pip` as an only dependency.  
+`pip-manager` is written purely in Python and has `pip` as an only dependency.  
 
 #### IMPORTANT note for Windows users:
 On Windows you have to install ported `curses` library ([link](http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses)) as native Python `curses` does not work there.
 
 ## 2. Installation
-**pip-manager** can be easily installed using `pip`:
+`pip-manager` can be easily installed using `pip`:
 ```
 pip install -U pip-manager
+```
+or `pipenv`:
+```
+pipenv install pip-manager
 ```
 If you want to install pip-manager system-wide just use `sudo`:
 ```
@@ -32,8 +36,8 @@ sudo pip install -U pip-manager
 ```
 
 ## 3. Usage
-To run **pip-manager** just type `pip-manager` in your terminal window and hit `Enter`.  
-If you made system-wide installation, run pip-manager with:
+To run `pip-manager` just type `pip-manager` in your terminal window and hit `Enter`.  
+If you made system-wide installation, run `pip-manager` with:
 ```
 sudo -H pip-manager
 ```
@@ -98,7 +102,7 @@ Contributions are always welcome - just:
 If you need assistance, want to report a bug or request a feature, please raise an issue [here](https://github.com/kchomski/pip-manager/issues).
 
 ## 6. License
-**pip-manager** is released under the terms of the MIT License. Please refer to the `LICENSE.txt` file for more details.
+`pip-manager` is released under the terms of the MIT License. Please refer to the `LICENSE.txt` file for more details.
 
 ## 7. Acknowledgements
 Great thanks to `pip` creators and contributors for making life easier for the rest of us. 

@@ -40,7 +40,7 @@ class Distribution(object):
         """
         error_msg = 'n/a'
         try:
-            subprocess.check_output([sys.executable, '-m', 'pip', 'install', '{}=='.format(self.name)], stderr=STDOUT)  # noqa: E501 line too long
+            subprocess.check_output([sys.executable, '-m', 'pip', 'install', '{}==lxPhr_ffmS3fZ3E4P7U1Lw'.format(self.name)], stderr=STDOUT)  # noqa: E501 line too long
         except CalledProcessError as e:
             error_msg = e.output.decode()
 

@@ -49,9 +49,9 @@ def test_get_newest_version(name, versions, expected, mocker):
         cmd='dummy cmd',
         output=(
             'Collecting pip==\n'
-            'Could not find a version that satisfies the requirement {}== (from versions: {})'.format(name, versions)
+            'Could not find a version that satisfies the requirement {}==lxPhr_ffmS3fZ3E4P7U1Lw (from versions: {})'.format(name, versions)
         ).encode(),
     )
     d = Distribution(name=name, version='1.0.0')
     assert d.newest_version == expected
-    mocked_subprocess.check_output.assert_called_with([sys.executable, '-m', 'pip', 'install', '{}=='.format(name)], stderr=STDOUT)
+    mocked_subprocess.check_output.assert_called_with([sys.executable, '-m', 'pip', 'install', '{}==lxPhr_ffmS3fZ3E4P7U1Lw'.format(name)], stderr=STDOUT)

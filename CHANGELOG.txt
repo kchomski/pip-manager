@@ -1,3 +1,8 @@
+v1.0.3
+- Fixed newest version checking as the previous solution was failing on some distributions.
+- Added Python 3.8 to test envs.
+- Minor README.rst corrections.
+-----------------------
 v1.0.2
 - Fixed README.rst generation for long_description (to show properly on pypi).
 -----------------------
