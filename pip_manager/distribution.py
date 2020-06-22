@@ -48,7 +48,7 @@ class Distribution(object):
             ver
             for ver in re.findall(
                 r'[\d\.]+[\d]*[\w]*',
-                error_msg.split('\n')[1].split('(')[-1]
+                error_msg.split('(')[1].split(')')[0].split(':')[1]
             )
         ]
         try:

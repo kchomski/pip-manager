@@ -48,8 +48,8 @@ def test_get_newest_version(name, versions, expected, mocker):
         returncode=1,
         cmd='dummy cmd',
         output=(
-            'Collecting pip==\n'
-            'Could not find a version that satisfies the requirement {}==lxPhr_ffmS3fZ3E4P7U1Lw (from versions: {})'.format(name, versions)
+            'ERROR: Could not find a version that satisfies the requirement {0}==lxPhr_ffmS3fZ3E4P7U1Lw '
+            '(from versions: {1})\nERROR: No matching distribution found for {0}==lxPhr_ffmS3fZ3E4P7U1Lw\n'.format(name, versions)
         ).encode(),
     )
     d = Distribution(name=name, version='1.0.0')
